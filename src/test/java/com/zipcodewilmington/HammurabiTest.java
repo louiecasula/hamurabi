@@ -2,7 +2,7 @@ package com.zipcodewilmington;
 
 import com.zipcodewilmington.hammurabi.Hammurabi;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -52,10 +52,6 @@ public class HammurabiTest {
         if (deaths < 0) {
             fail("You starved a negative number of people!");
         }
-    }
-
-    private void fail(String s) {
-
     }
 
     @Test
@@ -127,4 +123,3 @@ public class HammurabiTest {
     }
 
 }
-
