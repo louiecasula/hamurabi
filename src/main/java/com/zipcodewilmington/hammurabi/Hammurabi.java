@@ -58,11 +58,16 @@ public class Hammurabi {
         if (currentYear > 1){
             price = newCostOfLand();
             if (acresPlanted > 0) {
-                grainHarvested = harvest(acresPlanted);
+                grainHarvested = harvest(acresPlanted); // We gotta reset this is no grain is planted...
                 grainInStorage += grainHarvested;
-                acresPlanted = 0;
+                acresPlanted = 0; // Resetting value
             }
             peopleStarved = starvationDeaths(population, grainToFeed);
+            if (peopleStarved < 1) {
+                newCitizens = immigrants(population, acresOwned, grainInStorage);
+                population += newCitizens;
+//                newCitizens = 0; // Resetting value (do we need this one?)
+            }
         }
     }
 
@@ -77,7 +82,9 @@ public class Hammurabi {
             }
             else {
                 this.grainInStorage -= (proposal * this.price);
-                System.out.println("You now have " + this.grainInStorage + " bushels.");
+                if (proposal > 0) {
+                    System.out.println("You now have " + this.grainInStorage + " bushels.");
+                }
                 return proposal;
             }
         }
@@ -94,7 +101,9 @@ public class Hammurabi {
             }
             else {
                 this.grainInStorage += (proposal * this.price);
-                System.out.println("You now have " + this.grainInStorage + " bushels.");
+                if (proposal > 0) {
+                    System.out.println("You now have " + this.grainInStorage + " bushels.");
+                }
                 return proposal;
             }
         }
@@ -111,7 +120,9 @@ public class Hammurabi {
             }
             else {
                 this.grainInStorage -= proposal;
-                System.out.println("You now have " + this.grainInStorage + " bushels.");
+                if (proposal > 0) {
+                    System.out.println("You now have " + this.grainInStorage + " bushels.");
+                }
                 return proposal;
             }
         }
@@ -164,8 +175,7 @@ public class Hammurabi {
     // Do this later...
     public int immigrants(int population, int acresOwned, int grainInStorage) {
         // Don't call if anyone starves
-        // (20 * acresOwned + grainInStorage) / (100 * population) + 1.
-        return 0;
+        return (20 * acresOwned + grainInStorage) / (100 * population) + 1;
     }
 
     public int harvest(int acres) { // , int bushelsUsedAsSeed
@@ -210,7 +220,7 @@ public class Hammurabi {
         System.out.println(reason);
     }
 
-    boolean isGameOver(){ // Doesn't end immediately... fix this.
+    boolean isGameOver(){
         return this.currentYear >= 10 || uprising(population, peopleStarved);
     }
 }
