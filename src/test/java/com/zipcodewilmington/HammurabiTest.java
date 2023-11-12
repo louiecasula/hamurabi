@@ -1,9 +1,10 @@
-package hammurabi.src.test.java.com.zipcodewilmington.hammurabi;
+package com.zipcodewilmington;
+
+import com.zipcodewilmington.hammurabi.Hammurabi;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class HammurabiTest {
     
@@ -42,7 +43,7 @@ public class HammurabiTest {
         assertEquals("In a plague, " + deaths + "% of your people die, not 50%.",
                      50, deaths);
     }
-    
+
     @Test
     public final void testStarvationDeaths() {
         int deaths = ham.starvationDeaths(100, 1639);
@@ -51,6 +52,10 @@ public class HammurabiTest {
         if (deaths < 0) {
             fail("You starved a negative number of people!");
         }
+    }
+
+    private void fail(String s) {
+
     }
 
     @Test
@@ -88,7 +93,7 @@ public class HammurabiTest {
             }
         }
         int percentInfestations = infestations / 100;
-        assertTrue("Number of rat infestations is about " + percentInfestations + 
+        assertTrue("Number of rat infestations is about " + percentInfestations +
                    ", not about 40%.", about(400, infestations));
     }
 
