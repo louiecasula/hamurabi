@@ -1,4 +1,4 @@
-package hammurabi;
+package hammurabi.src.test.java.com.zipcodewilmington.hammurabi;
 
 import static org.junit.Assert.*;
 
