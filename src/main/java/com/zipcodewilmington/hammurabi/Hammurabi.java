@@ -20,6 +20,7 @@ public class Hammurabi {
     int peopleStarved = 0;
     int newCitizens = 5;
     int ratGrains = 200;
+    boolean plague = false;
     public static void main(String[] args) {
         new Hammurabi().playGame();
     }
@@ -43,10 +44,13 @@ public class Hammurabi {
     }
 
     void printSummary(){
-        System.out.println("\n\nO great Hammurabi!");
+        System.out.println("\n\nO great Bababouie!");
         System.out.printf("You are in year %d of your ten year rule.\n", currentYear);
         System.out.printf("In the previous year %d people starved to death.\n", peopleStarved);
         System.out.printf("In the previous year %d people entered the kingdom.\n", newCitizens);
+        if (plague) {
+            System.out.println("A horrible plague has struck! Half of the population has died...");
+        }
         System.out.printf("The population is now %d.\n", population);
         System.out.printf("We harvested %d bushels at %d bushels per acre.\n", grainHarvested, grainFactor);
         System.out.printf("Rats destroyed %d bushels, leaving %d bushels in storage.\n", ratGrains, grainInStorage);
@@ -59,18 +63,32 @@ public class Hammurabi {
         if (currentYear > 1){
             price = newCostOfLand();
             if (acresPlanted > 0) {
-                grainHarvested = harvest(acresPlanted); // We gotta reset this is no grain is planted...
+                grainHarvested = harvest(acresPlanted);
                 grainInStorage += grainHarvested;
                 acresPlanted = 0; // Resetting value
+            }
+            else {
+                grainHarvested = 0; // Resetting value
+                grainFactor = 0; // Resetting value
             }
             peopleStarved = starvationDeaths(population, grainToFeed);
             if (peopleStarved < 1) {
                 newCitizens = immigrants(population, acresOwned, grainInStorage);
                 population += newCitizens;
-//                newCitizens = 0; // Resetting value (do we need this one?)
+            }
+            else {
+                newCitizens = 0; // Resetting value
             }
             ratGrains = grainEatenByRats(grainInStorage);
             grainInStorage -= ratGrains;
+            int plagueDeaths = plagueDeaths(population);
+            if (plagueDeaths > 0) {
+                population -= plagueDeaths;
+                plague = true;
+            }
+            else {
+                plague = false; // Resetting value
+            }
         }
     }
 
@@ -153,9 +171,11 @@ public class Hammurabi {
         }
     }
 
-    // Do this later...
     public int plagueDeaths(int population) {
         // 15% chance of plague - 50% population dies
+        if (rand.nextInt(100) < 15){
+            return population / 2;
+        }
         return 0;
     }
 
@@ -175,7 +195,6 @@ public class Hammurabi {
         return (double) peopleDead / population > .45;
     }
 
-    // Do this later...
     public int immigrants(int population, int acresOwned, int grainInStorage) {
         // Don't call if anyone starves
         return (20 * acresOwned + grainInStorage) / (100 * population) + 1;
@@ -186,7 +205,6 @@ public class Hammurabi {
         return acres * (grainFactor);
     }
 
-    // Do this later...
     public int grainEatenByRats(int bushels) {
         // 40% chance of rat infestation, rats eat between 10-30% of grainInStorage
         if (rand.nextInt(100) < 40) {
@@ -214,19 +232,19 @@ public class Hammurabi {
     void sanityCheck(String x) {
         String reason = "";
         switch(x) {
-            case "grain": reason = "O Great Hammurabi, surely you jest! We have only " + this.grainInStorage + " bushels left!";
+            case "grain": reason = "O Great Bababouie, quit playin! We only got " + this.grainInStorage + " bushels left!";
                 break;
-            case "land": reason = "O Great Hammurabi, surely you jest! We have only " + this.acresOwned + " acres of land!";
+            case "land": reason = "O Great Bababouie, on Jah we only got " + this.acresOwned + " acres of land!";
                 break;
-            case "people": reason = "O Great Hammurabi, we have only " + this.population + " people to tend the fields!";
+            case "people": reason = "O Great Bababouie, you wild for that! We only got " + this.population + " people to tend the fields!";
                 break;
-            case "negative": reason = "Hammurabi, I cannot do what you wish. Get yourself another steward!!";
+            case "negative": reason = "Bababouie, respectfully, you're tweakin...";
                 break;
         }
         System.out.println(reason);
     }
 
     boolean isGameOver(){
-        return this.currentYear >= 10 || uprising(population, peopleStarved);
+        return this.currentYear > 10 || uprising(population, peopleStarved);
     }
 }
