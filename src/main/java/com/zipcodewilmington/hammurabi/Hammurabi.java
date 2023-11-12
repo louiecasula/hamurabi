@@ -19,6 +19,7 @@ public class Hammurabi {
     int grainHarvested = 3000;
     int peopleStarved = 0;
     int newCitizens = 5;
+    int ratGrains = 200;
     public static void main(String[] args) {
         new Hammurabi().playGame();
     }
@@ -48,7 +49,7 @@ public class Hammurabi {
         System.out.printf("In the previous year %d people entered the kingdom.\n", newCitizens);
         System.out.printf("The population is now %d.\n", population);
         System.out.printf("We harvested %d bushels at %d bushels per acre.\n", grainHarvested, grainFactor);
-        System.out.printf("Rats destroyed 200 bushels, leaving %d bushels in storage.\n", grainInStorage);
+        System.out.printf("Rats destroyed %d bushels, leaving %d bushels in storage.\n", ratGrains, grainInStorage);
         System.out.printf("The city owns %d acres of land.\n", acresOwned);
         System.out.printf("Land is currently worth %d bushels per acre.\n", price);
     }
@@ -68,6 +69,8 @@ public class Hammurabi {
                 population += newCitizens;
 //                newCitizens = 0; // Resetting value (do we need this one?)
             }
+            ratGrains = grainEatenByRats(grainInStorage);
+            grainInStorage -= ratGrains;
         }
     }
 
@@ -186,6 +189,9 @@ public class Hammurabi {
     // Do this later...
     public int grainEatenByRats(int bushels) {
         // 40% chance of rat infestation, rats eat between 10-30% of grainInStorage
+        if (rand.nextInt(100) < 40) {
+            return bushels * (rand.nextInt(21) + 10) / 100;
+        }
         return 0;
     }
 
