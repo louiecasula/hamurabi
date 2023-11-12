@@ -12,6 +12,7 @@ public class Hammurabi {
     int acresOwned = 1000;
     int population = 100;
     int currentYear = 0;
+    int grainToFeed = 0;
     int peopleFed = 0;
     int acresPlanted = 0;
     int grainFactor = 3;
@@ -23,16 +24,21 @@ public class Hammurabi {
     }
 
     void playGame() {
-        while (!isGameOver()){
+        while (true){
             newYear();
+            if (isGameOver()){
+                break;
+            }
             printSummary();
             int acresBought = askHowManyAcresToBuy();
             this.acresOwned += acresBought;
             if (acresBought == 0){
                 this.acresOwned -= askHowManyAcresToSell();
             }
+            this.grainToFeed = askHowMuchGrainToFeedPeople();
             this.acresPlanted += askHowManyAcresToPlant();
         }
+        System.out.println("GAME OVER");
     }
 
     void printSummary(){
@@ -56,7 +62,7 @@ public class Hammurabi {
                 grainInStorage += grainHarvested;
                 acresPlanted = 0;
             }
-            peopleStarved = starvationDeaths(population, peopleFed);
+            peopleStarved = starvationDeaths(population, grainToFeed);
         }
     }
 
@@ -128,7 +134,6 @@ public class Hammurabi {
             }
             else {
                 this.grainInStorage -= proposal;
-                System.out.println("You now have " + this.grainInStorage + " bushels.");
                 return proposal;
             }
         }
@@ -151,12 +156,9 @@ public class Hammurabi {
         return peopleStarved;
     }
 
-    public boolean uprising(int population, int bushelsFedToPeople) {
+    public boolean uprising(int population, int peopleDead) {
         // if more than 45% of people starve, return true -
-        // peopleFed = bushelsFedToPeople / 20
-        // population - peopleFed = starvationDeaths
-        // if starvationDeaths / population > .45 , return true
-        return false;
+        return (double) peopleDead / population > .45;
     }
 
     // Do this later...
@@ -209,6 +211,6 @@ public class Hammurabi {
     }
 
     boolean isGameOver(){ // Doesn't end immediately... fix this.
-        return this.currentYear >= 10 || this.population < 1;
+        return this.currentYear >= 10 || uprising(population, peopleStarved);
     }
 }
