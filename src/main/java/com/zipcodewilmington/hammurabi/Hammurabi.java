@@ -8,12 +8,14 @@ public class Hammurabi {
     Random rand = new Random();
     Scanner scanner = new Scanner(System.in);
     int price = 19;
-    int bushels = 2800;
+    int grainInStorage = 2800;
     int acresOwned = 1000;
     int population = 100;
     int currentYear = 0;
     int peopleFed = 0;
     int acresPlanted = 0;
+    int grainFactor = 3;
+    int grainHarvested = 3000;
     public static void main(String[] args) {
         new Hammurabi().playGame();
     }
@@ -38,16 +40,21 @@ public class Hammurabi {
         System.out.printf("In the previous year 0 people starved to death.\n");
         System.out.printf("In the previous year 5 people entered the kingdom.\n");
         System.out.printf("The population is now %d.\n", population);
-        System.out.printf("We harvested 3000 bushels at 3 bushels per acre.\n");
-        System.out.printf("Rats destroyed 200 bushels, leaving %d bushels in storage.\n", bushels);
+        System.out.printf("We harvested %d bushels at %d bushels per acre.\n", grainHarvested, grainFactor);
+        System.out.printf("Rats destroyed 200 bushels, leaving %d bushels in storage.\n", grainInStorage);
         System.out.printf("The city owns %d acres of land.\n", acresOwned);
         System.out.printf("Land is currently worth %d bushels per acre.\n", price);
     }
 
     void newYear(){
-        this.currentYear++;
-        if (this.currentYear > 1){
-            this.price = newCostOfLand();
+        currentYear++;
+        if (currentYear > 1){
+            price = newCostOfLand();
+            if (acresPlanted > 0) {
+                grainHarvested = harvest(acresPlanted);
+                grainInStorage += grainHarvested;
+                acresPlanted = 0;
+            }
         }
     }
 
@@ -57,12 +64,12 @@ public class Hammurabi {
             if (proposal < 0) {
                 sanityCheck("negative");
             }
-            else if (proposal * this.price > this.bushels) {
+            else if (proposal * this.price > this.grainInStorage) {
                 sanityCheck("grain");
             }
             else {
-                this.bushels -= (proposal * this.price);
-                System.out.println("You now have " + this.bushels + " bushels.");
+                this.grainInStorage -= (proposal * this.price);
+                System.out.println("You now have " + this.grainInStorage + " bushels.");
                 return proposal;
             }
         }
@@ -78,8 +85,8 @@ public class Hammurabi {
                 sanityCheck("land");
             }
             else {
-                this.bushels += (proposal * this.price);
-                System.out.println("You now have " + this.bushels + " bushels.");
+                this.grainInStorage += (proposal * this.price);
+                System.out.println("You now have " + this.grainInStorage + " bushels.");
                 return proposal;
             }
         }
@@ -91,12 +98,12 @@ public class Hammurabi {
             if (proposal < 0) {
                 sanityCheck("negative");
             }
-            else if (proposal > this.bushels) {
+            else if (proposal > this.grainInStorage) {
                 sanityCheck("grain");
             }
             else {
-                this.bushels -= proposal;
-                System.out.println("You now have " + this.bushels + " bushels.");
+                this.grainInStorage -= proposal;
+                System.out.println("You now have " + this.grainInStorage + " bushels.");
                 return proposal;
             }
         }
@@ -111,15 +118,15 @@ public class Hammurabi {
             else if (proposal > (this.population * 10)) {
                 sanityCheck("people");
             }
-            else if (proposal > this.bushels) {
+            else if (proposal > this.grainInStorage) {
                 sanityCheck("grain");
             }
             else if (proposal > this.acresOwned) {
                 sanityCheck("land");
             }
             else {
-                this.bushels -= proposal;
-                System.out.println("You now have " + this.bushels + " bushels.");
+                this.grainInStorage -= proposal;
+                System.out.println("You now have " + this.grainInStorage + " bushels.");
                 return proposal;
             }
         }
@@ -127,28 +134,40 @@ public class Hammurabi {
 
     // Do this later...
     public int plagueDeaths(int population) {
+        // 15% chance of plague - 50% population dies
         return 0;
     }
 
-    public int starvationDeaths(int i, int i1) {
+    public int starvationDeaths(int population, int bushelsFedToPeople) {
+        // Each person needs 20 bushels per year -
+        // peopleFed = bushelsFedToPeople / 20
+        // population - peopleFed = starvationDeaths
         return 0;
     }
 
     public boolean uprising(int population, int bushelsFedToPeople) {
+        // if more than 45% of people starve, return true -
+        // peopleFed = bushelsFedToPeople / 20
+        // population - peopleFed = starvationDeaths
+        // if starvationDeaths / population > .45 , return true
         return false;
     }
 
     // Do this later...
     public int immigrants(int population, int acresOwned, int grainInStorage) {
+        // Don't call if anyone starves
+        // (20 * acresOwned + grainInStorage) / (100 * population) + 1.
         return 0;
     }
 
     public int harvest(int acres) { // , int bushelsUsedAsSeed
-        return 0;
+        grainFactor = rand.nextInt(6) + 1;
+        return acres * (grainFactor);
     }
 
     // Do this later...
     public int grainEatenByRats(int bushels) {
+        // 40% chance of rat infestation, rats eat between 10-30% of grainInStorage
         return 0;
     }
 
@@ -171,7 +190,7 @@ public class Hammurabi {
     void sanityCheck(String x) {
         String reason = "";
         switch(x) {
-            case "grain": reason = "O Great Hammurabi, surely you jest! We have only " + this.bushels + " bushels left!";
+            case "grain": reason = "O Great Hammurabi, surely you jest! We have only " + this.grainInStorage + " bushels left!";
                 break;
             case "land": reason = "O Great Hammurabi, surely you jest! We have only " + this.acresOwned + " acres of land!";
                 break;
