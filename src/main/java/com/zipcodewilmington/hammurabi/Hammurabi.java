@@ -16,6 +16,8 @@ public class Hammurabi {
     int acresPlanted = 0;
     int grainFactor = 3;
     int grainHarvested = 3000;
+    int peopleStarved = 0;
+    int newCitizens = 5;
     public static void main(String[] args) {
         new Hammurabi().playGame();
     }
@@ -29,7 +31,6 @@ public class Hammurabi {
             if (acresBought == 0){
                 this.acresOwned -= askHowManyAcresToSell();
             }
-            this.peopleFed += (askHowMuchGrainToFeedPeople() / 20);
             this.acresPlanted += askHowManyAcresToPlant();
         }
     }
@@ -37,8 +38,8 @@ public class Hammurabi {
     void printSummary(){
         System.out.println("\n\nO great Hammurabi!");
         System.out.printf("You are in year %d of your ten year rule.\n", currentYear);
-        System.out.printf("In the previous year 0 people starved to death.\n");
-        System.out.printf("In the previous year 5 people entered the kingdom.\n");
+        System.out.printf("In the previous year %d people starved to death.\n", peopleStarved);
+        System.out.printf("In the previous year %d people entered the kingdom.\n", newCitizens);
         System.out.printf("The population is now %d.\n", population);
         System.out.printf("We harvested %d bushels at %d bushels per acre.\n", grainHarvested, grainFactor);
         System.out.printf("Rats destroyed 200 bushels, leaving %d bushels in storage.\n", grainInStorage);
@@ -55,6 +56,7 @@ public class Hammurabi {
                 grainInStorage += grainHarvested;
                 acresPlanted = 0;
             }
+            peopleStarved = starvationDeaths(population, peopleFed);
         }
     }
 
@@ -140,9 +142,13 @@ public class Hammurabi {
 
     public int starvationDeaths(int population, int bushelsFedToPeople) {
         // Each person needs 20 bushels per year -
-        // peopleFed = bushelsFedToPeople / 20
-        // population - peopleFed = starvationDeaths
-        return 0;
+        peopleFed = (bushelsFedToPeople / 20);
+        if (peopleFed > population){
+            return 0;
+        }
+        peopleStarved = population - peopleFed;
+        this.population -= peopleStarved;
+        return peopleStarved;
     }
 
     public boolean uprising(int population, int bushelsFedToPeople) {
@@ -202,7 +208,7 @@ public class Hammurabi {
         System.out.println(reason);
     }
 
-    boolean isGameOver(){
+    boolean isGameOver(){ // Doesn't end immediately... fix this.
         return this.currentYear >= 10 || this.population < 1;
     }
 }
