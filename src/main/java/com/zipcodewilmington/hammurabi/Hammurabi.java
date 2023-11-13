@@ -272,7 +272,7 @@ public class Hammurabi {
                     "\n");
         }
         else if (totalStarved > 10 || acresOwned/population < 10){
-            System.out.println("\n\nGrade: D+\n\nYa just barely made it. Step ur game up, sucka");
+            System.out.println("\n\nGrade: D+\n\n");
             System.out.println(" ___________________________ \n" +
                     "< Got me in a bad MOOd rn bruh >\n" +
                     " ------------------------------ \n" +
